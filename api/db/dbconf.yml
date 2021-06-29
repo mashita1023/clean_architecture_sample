@@ -1,0 +1,13 @@
+development:
+	driver: mysql
+	open: tcp:127.0.0.1:3306*test/root/pwd
+
+cunstomimport:
+	driver: customdriver
+	open: customdriver open
+	import: github.com/custom/driver
+	dialect: mysql
+
+environment_variable_config:
+	dirver: $DB_DRIVER
+	open: $DATABASE_URL

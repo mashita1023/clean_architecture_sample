@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  gin_api:
+    container_name: gin_api
+    build:
+      context: ./api
+    ports:
+      - 3000:3000
+    links:
+      - gin_db
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./api:/go/src/github.com/mashita1023/clean-architecture
+    environment:
+      GO111MODULE: "on"
+      http_proxy: "http://proxy.nagaokaut.ac.jp:8080"
+      https_proxy: "http://proxy.nagaokaut.ac.jp:8080"
+#    env_file: .env
+
+  gin_db:
+    container_name: gin_db
+#    build:
+#      context: ./mysql
+    image: mysql:5.7
+    hostname: mysql
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --skip-character-set-client-handshake
+    volumes:
+      - "./mysql_data/mysql:/car/lib/mysql"
+      - "./mysql/init/:/docker-entrypoint-initdb.d"
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: pwd
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pwd
+      http_proxy: "http://proxy.nagaokaut.ac.jp:8080"
+      https_proxy: "http://proxy.nagaokaut.ac.jp:8080"
+
+  gin_adminer:
+    container_name: gin_adminer
+    image: adminer
+    links:
+      - gin_db
+    ports:
+      - "8080:8080"
